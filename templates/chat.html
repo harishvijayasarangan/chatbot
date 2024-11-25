@@ -1,14 +1,6 @@
-<link
-  href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-  rel="stylesheet"
-  id="bootstrap-css"
-/>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Chatbot</title>
     <link
       rel="stylesheet"
@@ -28,9 +20,9 @@
       type="text/css"
       href="{{ url_for('static', filename='style.css')}}"
     />
-  </head>
+</head>
 
-  <body>
+<body>
     <div class="chatbot-icon" onclick="toggleChatbot()">
       <i class="fas fa-comments"></i>
     </div>
@@ -53,6 +45,7 @@
         </div>
         <div id="messageFormeight" class="card-body msg_card_body"></div>
         <div class="card-footer">
+          <div id="image-preview"></div>
           <form id="messageArea" class="input-group" enctype="multipart/form-data">
             <input
               type="text"
@@ -63,19 +56,8 @@
               class="form-control type_msg"
               required
             />
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              class="form-control-file"
-            />
             <div class="input-group-append">
-              <button
-                type="submit"
-                id="send"
-                class="input-group-text send_btn"
-              >
+              <button type="submit" id="send" class="input-group-text send_btn">
                 <i class="fas fa-location-arrow"></i>
               </button>
             </div>
@@ -85,6 +67,8 @@
     </div>
 
     <script>
+      let pastedImage = null;
+
       function scrollToBottom() {
         var messageBody = document.getElementById("messageFormeight");
         messageBody.scrollTop = messageBody.scrollHeight;
@@ -99,7 +83,36 @@
         }
       }
 
+      function clearImage() {
+        pastedImage = null;
+        $("#image-preview").empty();
+      }
+
       $(document).ready(function () {
+        // Add paste event listener
+        $("#text").on('paste', function(e) {
+          const items = e.originalEvent.clipboardData.items;
+          for (let item of items) {
+            if (item.type.indexOf('image') === 0) {
+              pastedImage = item.getAsFile();
+              
+              const reader = new FileReader();
+              reader.onload = function(event) {
+                $("#image-preview").html(`
+                  <div class="pasted-image-preview">
+                    <img src="${event.target.result}">
+                    <button type="button" class="remove-image-btn" onclick="clearImage()">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                `);
+              };
+              reader.readAsDataURL(pastedImage);
+              break;
+            }
+          }
+        });
+
         $("#messageArea").on("submit", function (event) {
           event.preventDefault();
 
@@ -108,25 +121,34 @@
           const minute = date.getMinutes();
           const str_time = hour + ":" + minute;
           var rawText = $("#text").val();
-          var imageFile = $("#image")[0].files[0];
 
           var formData = new FormData();
           formData.append("msg", rawText);
-          if (imageFile) {
-            formData.append("image", imageFile);
+          if (pastedImage) {
+            formData.append("image", pastedImage);
           }
 
           var userHtml =
-            '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' +
-            rawText +
-            '<span class="msg_time_send">' +
-            str_time +
-            '</span></div><div class="img_cont_msg"><img src="https://your-own-image-url.com/user-icon.png" class="rounded-circle user_img_msg"></div></div>';
+            '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">';
+          
+          if (pastedImage) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              userHtml += `<img src="${event.target.result}" class="pasted-chat-image"><br>`;
+              userHtml += rawText + '<span class="msg_time_send">' + str_time + '</span></div>';
+              userHtml += '<div class="img_cont_msg"><img src="https://your-own-image-url.com/user-icon.png" class="rounded-circle user_img_msg"></div></div>';
+              $("#messageFormeight").append(userHtml);
+              scrollToBottom();
+            };
+            reader.readAsDataURL(pastedImage);
+          } else {
+            userHtml += rawText + '<span class="msg_time_send">' + str_time + '</span></div>';
+            userHtml += '<div class="img_cont_msg"><img src="https://your-own-image-url.com/user-icon.png" class="rounded-circle user_img_msg"></div></div>';
+            $("#messageFormeight").append(userHtml);
+          }
 
           $("#text").val("");
-          $("#image").val("");
-          $("#messageFormeight").append(userHtml);
-
+          clearImage();
           scrollToBottom();
 
           $.ajax({
@@ -148,5 +170,43 @@
         });
       });
     </script>
-  </body>
+
+    <style>
+      .pasted-image-preview {
+        position: relative;
+        display: inline-block;
+        margin: 10px 0;
+      }
+
+      .pasted-image-preview img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 5px;
+      }
+
+      .remove-image-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pasted-chat-image {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 5px;
+        margin: 5px 0;
+      }
+    </style>
+</body>
 </html>
