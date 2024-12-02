@@ -1,7 +1,7 @@
 body,html{
 	height: 100%;
 	margin: 0;
-	background: rgb(255, 255, 255);
+	background: #1a1a1a !important;
 }
 
 .chatbot-icon {
@@ -29,7 +29,7 @@ body,html{
   bottom: 90px;
   right: 20px;
   width: 350px;
-  height: 500px;
+  height: 650px;
   z-index: 1000;
   display: none;
   background-color: rgba(255, 255, 255, 0.9);
@@ -40,9 +40,9 @@ body,html{
 	margin-bottom: auto;
 }
 .card{
-	height: 100%;
+	height: 650px;
 	border-radius: 15px !important;
-	background-color: rgba(255, 255, 255, 0.8);
+	background-color: rgba(0,0,0,0.4) !important;
 	border: 1px solid #28a745;
 }
 .contacts_body{
@@ -52,6 +52,10 @@ body,html{
 }
 .msg_card_body{
 	overflow-y: auto;
+	height: calc(100% - 130px);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
 }
 .card-header{
 	border-radius: 15px 15px 0 0 !important;
@@ -60,6 +64,9 @@ body,html{
 .card-footer{
 	border-radius: 0 0 15px 15px !important;
 	border-top: 0 !important;
+	padding: 15px;
+	background: #1a1a1a;
+	border-top: 1px solid #2d2d2d;
 }
 .container{
 	align-content: center;
@@ -75,11 +82,11 @@ body,html{
    outline:0px !important;
 }
 .type_msg{
-	background-color: rgba(0,0,0,0.3) !important;
-	border:0 !important;
-	color:white !important;
-	height: 60px !important;
-	overflow-y: auto;
+	background-color: #2d2d2d !important;
+	border: 1px solid #444 !important;
+	color: white !important;
+	height: 50px !important;
+	padding: 10px 15px;
 }
 .type_msg:focus{
 	 box-shadow:none !important;
@@ -174,22 +181,27 @@ body,html{
 	margin-right: 20px;
 }
 .msg_cotainer{
-	margin-top: auto;
-	margin-bottom: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	margin-left: 10px;
-	border-radius: 25px;
-	background-color: #82e0aa;
-	padding: 10px;
+	border-radius: 15px;
+	background-color: rgb(82, 172, 255);
+	padding: 12px 15px;
 	position: relative;
+	max-width: 70%;
+	word-wrap: break-word;
 }
 .msg_cotainer_send{
-	margin-top: auto;
-	margin-bottom: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	margin-right: 10px;
-	border-radius: 25px;
+	border-radius: 15px;
 	background-color: #58cc71;
-	padding: 10px;
+	padding: 12px 15px;
 	position: relative;
+	max-width: 70%;
+	word-wrap: break-word;
+	align-self: flex-end;
 }
 .msg_time{
 	position: absolute;
