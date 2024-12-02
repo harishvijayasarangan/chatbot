@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from langchain_openai import ChatOpenAI
 import base64
-API_KEY = "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"  
+API_KEY = "you api key from open router , or any other open api compatable api , mak sure if you are using other than open router , make sure the syntax is coreect, you can also chage the model name to use the model suitable for your use case"  
 # Initialize the chat model
 chat_llm = ChatOpenAI(api_key=API_KEY, base_url="https://openrouter.ai/api/v1", model="meta-llama/llama-3.2-1b-instruct:free", temperature=0.0)
 app = Flask(__name__)
